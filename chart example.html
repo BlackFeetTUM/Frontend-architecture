@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <style>
+
+            rect:hover{
+                fill: red;
+            }
+            rect{
+                fill: green;
+                opacity: 0.7;
+
+            }
+            .axis text{
+                font: 10px sans-serif;
+            }
+            .axis path, .axis line{
+                fill: none;
+                stroke: black;
+                //shape-rendering: crispEdges;
+            }
+            body{
+                margin: 0px;
+                width: 100%;
+            }
+            .speed_control{
+                width: 400px;
+                height: 300px;
+                margin: 0 auto;
+                margin-top: 50px;
+                font-family: "Calibri";
+                font-size: 20px;
+                border-style: solid;
+                border-width: 5px;
+                border-radius: 10px;
+                padding-top: 10px;
+                 
+            }
+            h3{
+                text-align: center;
+                margin: 0px;
+            }
+            .cool{
+                width: 300px;   
+                display: block;
+                margin: -50px auto;
+            }
+        </style>
+   
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+    </head>
+    <body>
+        <div class="speed_control">
+            <h3>Speed control</h3>
+        </div>
+        <script type="text/javascript">
+            
+        //generate random data            
+            function generateData(num, sum) {
+                var randomArray = [];
+                var gesamt = sum;
+                for(var i=0; i<num-1; i++) {
+                    var value = Math.random()*gesamt;
+                    gesamt = gesamt - value;
+                    randomArray.push(value);
+                }
+                randomArray.push(gesamt);
+                return randomArray;
+            }
+            
+            function compareNumbers(x, y) {
+                result = x-y;
+                return result;
+            }
+            function init() {
+                var width = 200;
+                var height = 300;
+                var dataMax = 200;
+                //var data = (generateData(5, 200));
+
+                var svg = d3.select(".speed_control").append("svg")
+                        .attr("class", "cool")
+                        .attr("width", 1000)
+                        .attr("height", 500);
+                
+                var color = new Array("red", "green", "blue", "yellow", "purple");
+                
+                for(ri=0; ri < 5; ri++) {
+                    svg.append("rect");
+                            //.style("fill", color[ri]);
+                    
+                }
+
+//                var bars = svg.selectAll("rect")
+//                        .data(data)
+//                        .enter()
+//                        .append("rect");
+//
+//                var barWidthFirst = (width - 70)/bars[0].length;
+//                var barWidth = (barWidthFirst * (bars[0].length +1 ))/bars[0].length;
+//                bars.attr("width", barWidth)
+//                    .attr("y", function(d) {return height -20 - d;})
+//                    .attr("x", function(d,i) {return 50 + i * 1.5 *barWidth;})
+//                    .attr("height", function (d) { return d;});
+            
+                //make axis
+                var axisScale = d3.scale.linear()
+                        .domain([0,200])
+                        .range([200,0]);
+                
+                var xAxis = d3.svg.axis()
+                    .scale(d3.scale.linear().domain([0,250]).range([0,250]))
+                    .ticks(0)
+                    .tickSize(3, 0)
+                    .orient("bottom");
+            
+                var yAxis = d3.svg.axis()
+                    .scale(axisScale)
+                    .orient("left")
+                    .ticks(8, ">");
+
+                svg.append("g")
+                   .attr("class", "axis")
+                   .attr("transform", "translate(50," + (height - 20) + ")")
+                   .call(xAxis);
+
+                svg.append("g")
+                   .attr("class", "axis")
+                   .attr("transform", "translate(50," + (height - 200 - 20) + ")")
+                   .call(yAxis);
+            }
+            function main() {
+                var width = 200;
+                var height = 300;
+                var dataMax = 200;
+                var data = (generateData(5, 200));
+                var svg = d3.select(".cool");
+                var bars = svg.selectAll("rect")
+                        .data(data);
+                
+                var barWidthFirst = (width - 70)/bars[0].length;
+                var barWidth = (barWidthFirst * (bars[0].length +1 ))/bars[0].length;
+                bars.attr("width", barWidth)
+                    .transition()
+                    .duration(1000)
+                    .attr("y", function(d) {return height -20 - d;})
+                    .attr("x", function(d,i) {return 50 + i * 1.5 *barWidth;})
+                    .attr("height", function (d) { return d;});
+            }
+            init();
+            $(".speed_control").draggable();
+            main();
+            setInterval(function(){main();}, 3000);
+
+        
+        </script>
+    </body>
+</html>
